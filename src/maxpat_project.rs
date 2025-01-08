@@ -52,7 +52,7 @@ pub fn preprocess_template_file(template_path: &str, files: &[String]) -> Result
     let project_contents = build_prject_contents(files);
     project.insert("contents".to_string(), serde_json::to_value(project_contents)?, );
 
-    write_template(template_path, maxpat_json)
+    write_template(template_path, &maxpat_json)
 }
 
 fn build_prject_contents(files: &[String]) -> ProjectContents {
@@ -83,7 +83,7 @@ fn build_prject_contents(files: &[String]) -> ProjectContents {
     contents
 }
 
-fn write_template(template_path: &str, template: Value) -> Result<String> {
+fn write_template(template_path: &str, template: &Value) -> Result<String> {
     let mut output_file = env::temp_dir();
     output_file.push("maxbuild");
     output_file.push(SystemTime::now()

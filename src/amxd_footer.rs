@@ -57,7 +57,7 @@ impl DeviceFileFlag {
 
 impl DeviceFile {
     fn to_footer_field(&self) -> Bytes {
-        let hfsplus_time:u32 = to_hfsplus_time(self.modification_date);
+        let hfsplus_time:u32 = to_hfsplus_time(&self.modification_date);
 
         let mut buf = BytesMut::new();
         buf.put(build_frozen_device_field("type", self.file_type.to_field_representation()));
@@ -72,7 +72,7 @@ impl DeviceFile {
     }
 }
 
-fn to_hfsplus_time(system_time: SystemTime) -> u32 {
+fn to_hfsplus_time(system_time: &SystemTime) -> u32 {
     const HFSPLUS_OFFSET: u64 = 2082844800;
 
     let unix_time = system_time.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();

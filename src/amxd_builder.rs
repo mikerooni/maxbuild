@@ -41,7 +41,7 @@ impl DeviceType {
     }
 }
 
-pub fn build_frozen_amxd(device_type: DeviceType, meta: u32, data: Bytes, footer: Bytes) -> Bytes {
+pub fn build_frozen_amxd(device_type: &DeviceType, meta: &u32, data: Bytes, footer: Bytes) -> Bytes {
     let mut buf = BytesMut::new();
 
     buf.put(build_header_field("ampf", device_type.to_header_representation()));

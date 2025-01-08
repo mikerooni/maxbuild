@@ -52,8 +52,8 @@ fn main() {
 
     let device_data = build_device(&preprocessed_template, &includes);
     let frozen_device = build_frozen_amxd(
-        args.device_type,
-        meta,
+        &args.device_type,
+        &meta,
         device_data.data,
         build_footer(&device_data.files),
     );
