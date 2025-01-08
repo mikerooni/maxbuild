@@ -55,7 +55,7 @@ fn main() {
         args.device_type,
         meta,
         device_data.data,
-        build_footer(device_data.files),
+        build_footer(&device_data.files),
     );
 
     fs::write(Path::new(&args.output_file), &frozen_device).unwrap();

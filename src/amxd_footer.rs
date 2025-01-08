@@ -20,7 +20,7 @@ use bytes::{BufMut, Bytes, BytesMut};
 use crate::amxd_fields::{build_frozen_device_field};
 use crate::device_builder::{DeviceFile, DeviceFileFlag, DeviceFileType};
 
-pub fn build_footer(files: Vec<DeviceFile>) -> Bytes{
+pub fn build_footer(files: &[DeviceFile]) -> Bytes{
     let mut buf = BytesMut::new();
 
     for file in files {

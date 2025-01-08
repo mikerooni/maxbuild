@@ -45,7 +45,7 @@ struct ProjectContents {
     data: HashMap<String, ProjectFile>,
 }
 
-pub fn preprocess_template_file(template_path: &str, files: &Vec<String>) -> Result<String> {
+pub fn preprocess_template_file(template_path: &str, files: &[String]) -> Result<String> {
     let mut maxpat_json = parse_maxpat_json(template_path)?;
     let project = maxpat_json["patcher"]["project"].as_object_mut().unwrap();
 
@@ -55,7 +55,7 @@ pub fn preprocess_template_file(template_path: &str, files: &Vec<String>) -> Res
     write_template(template_path, maxpat_json)
 }
 
-fn build_prject_contents(files: &Vec<String>) -> ProjectContents {
+fn build_prject_contents(files: &[String]) -> ProjectContents {
     let mut contents = ProjectContents::default();
 
     for file in files {

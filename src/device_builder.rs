@@ -48,7 +48,7 @@ pub struct DeviceData {
     pub files: Vec<DeviceFile>
 }
 
-pub fn build_device(main_file_path: &String, paths: &Vec<String>) -> DeviceData {
+pub fn build_device(main_file_path: &String, paths: &[String]) -> DeviceData {
     let mut data_buf = BytesMut::new();
     let mut files: Vec<DeviceFile> = Vec::new();
 
