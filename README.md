@@ -7,7 +7,7 @@ and additional files or directories to be included in the final package.
 ## Usage
 
 ```
-maxdiff --template <template-file> --output-file <output-file> --device-type <type>
+maxbuild --template <template-file> --output-file <output-file> --device-type <type>
 ```
 
 
@@ -17,7 +17,7 @@ To include additional files or folders in your frozen `.amxd` file, you can use 
 (as many times as necessary).
 
 ```
-maxdiff -t <template> -o <output> -d <type> --include <folder-a> --include <folder-b> --include <single-file>
+maxbuild -t <template> -o <output> -d <type> --include <folder-a> --include <folder-b> --include <single-file>
 ```
 
 > #### ⚠ INCLUDED FILE NAMES ⚠
