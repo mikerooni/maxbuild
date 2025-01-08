@@ -15,8 +15,8 @@
  */
 
 
-use std::process::exit;
-use clap::Parser;
+use clap::{Parser, ValueEnum};
+use clap::builder::PossibleValue;
 use crate::amxd_builder::DeviceType;
 
 #[derive(Parser, Debug)]
@@ -32,28 +32,29 @@ pub struct MaxBuildArgs {
     pub include: Vec<String>,
     
     #[arg(short, long, required = true)]
-    pub device_type: String,
+    pub device_type: DeviceType,
 }
 
-impl MaxBuildArgs {
-    pub fn resolve_device_type(&self) -> DeviceType {
-        match self.device_type.as_str() {
-            "instrument" => DeviceType::Instrument,
-            "audio-fx" => DeviceType::AudioEffect,
-            "midi-fx" => DeviceType::MidiEffect,
-            "note-generator" => DeviceType::MidiToolGenerator,
-            "note-transformer" => DeviceType::MidiToolTransformer,
-            unknown => {
-                println!("Unknown device type: {}", unknown);
-                println!("Valid device types:");
-                println!("- instrument");
-                println!("- audio-fx");
-                println!("- midi-fx");
-                println!("- note-generator");
-                println!("- note-transformer");
 
-                exit(1);
-            },
-        }
+
+impl ValueEnum for DeviceType {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[
+            Self::AudioEffect,
+            Self::MidiEffect,
+            Self::Instrument,
+            Self::MidiToolGenerator,
+            Self::MidiToolTransformer,
+        ]
+    }
+
+    fn to_possible_value(&self) -> Option<PossibleValue> {
+        Some(match self {
+            Self::AudioEffect => PossibleValue::new("audio-fx"),
+            Self::MidiEffect => PossibleValue::new("midi-fx"),
+            Self::Instrument => PossibleValue::new("instrument"),
+            Self::MidiToolGenerator => PossibleValue::new("note-generator"),
+            Self::MidiToolTransformer => PossibleValue::new("note-transformer"),
+        })
     }
 }

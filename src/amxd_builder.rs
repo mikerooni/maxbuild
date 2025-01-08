@@ -18,6 +18,7 @@
 use crate::amxd_fields::{build_frozen_device_field_padless, build_header_field};
 use bytes::{BufMut, Bytes, BytesMut};
 
+#[derive(Debug, Clone)]
 pub enum DeviceType {
     AudioEffect,
     MidiEffect,

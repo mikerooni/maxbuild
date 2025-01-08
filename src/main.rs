@@ -35,7 +35,6 @@ mod maxpat_project;
 
 fn main() {
     let args = MaxBuildArgs::parse();
-    let device_type = args.resolve_device_type();
 
     let mut includes: Vec<String> = Vec::new();
     for included_dir in args.include {
@@ -53,7 +52,7 @@ fn main() {
 
     let device_data = build_device(&preprocessed_template, &includes);
     let frozen_device = build_frozen_amxd(
-        device_type,
+        args.device_type,
         meta,
         device_data.data,
         build_footer(device_data.files),
