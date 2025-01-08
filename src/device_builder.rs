@@ -19,14 +19,7 @@ use std::{fs};
 use std::path::Path;
 use std::time::SystemTime;
 use bytes::{BufMut, Bytes, BytesMut};
-
-
-pub enum DeviceFileType {
-    Json, // only used for max patchers (?)
-    Text,
-    Svg,
-    Png,
-}
+use crate::max_filetypes::determine_file_type;
 
 pub enum DeviceFileFlag {
     None,
@@ -35,7 +28,7 @@ pub enum DeviceFileFlag {
 }
 
 pub struct DeviceFile {
-    pub file_type: DeviceFileType,
+    pub file_type: String,
     pub file_name: String,
     pub data_size: u32,
     pub data_offset: u32,
@@ -77,22 +70,11 @@ fn add_file(file_path: &String, flag: DeviceFileFlag, data_buf: &mut BytesMut) -
     data_buf.put(Bytes::from(bytes));
 
     Some(DeviceFile {
-        file_type: determine_file_type(path.extension()?.to_str()?),
+        file_type: determine_file_type(path.extension()?.to_str()?).four_character_code,
         file_name: path.file_name()?.to_str()?.to_owned(),
         data_size: length as u32,
         data_offset: data_offset as u32 + 16, // +16 to account for frozen device header
         flag,
         modification_date: SystemTime::now()
     })
-}
-
-fn determine_file_type(extension: &str) -> DeviceFileType {
-    match extension {
-        "amxd" => DeviceFileType::Json,
-        "maxpat" => DeviceFileType::Json,
-        "json" => DeviceFileType::Json,
-        "svg" => DeviceFileType::Svg,
-        "png" => DeviceFileType::Png,
-        _ => DeviceFileType::Text
-    }
 }

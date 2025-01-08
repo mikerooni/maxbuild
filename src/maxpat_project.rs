@@ -23,7 +23,7 @@ use std::collections::HashMap;
 use std::path::Path;
 use std::time::SystemTime;
 use std::{env, fs};
-
+use crate::max_filetypes::{determine_file_type, MaxFileType, ProjectContentSection};
 
 #[derive(Serialize, Deserialize)]
 struct ProjectFile {
@@ -43,6 +43,8 @@ struct ProjectContents {
     media: HashMap<String, ProjectFile>,
     code: HashMap<String, ProjectFile>,
     data: HashMap<String, ProjectFile>,
+    externals: HashMap<String, ProjectFile>,
+    other: HashMap<String, ProjectFile>,
 }
 
 pub fn preprocess_template_file(template_path: &str, files: &[String]) -> Result<String> {
@@ -61,23 +63,18 @@ fn build_prject_contents(files: &[String]) -> ProjectContents {
     for file in files {
         let path = Path::new(file);
         let file_name = path.file_name().unwrap().to_str().unwrap().to_string();
-        match path.extension().map(|e| e.to_ascii_lowercase()) {
-            Some(x) if x == "maxpat" => {
-                contents.patchers.insert(file_name, ProjectFile::new("patcher"));
-            }
-            Some(x) if x == "js" => {
-                contents.code.insert(file_name, ProjectFile::new("javascript"));
-            }
-            Some(x) if x == "svg" => {
-                contents.media.insert(file_name, ProjectFile::new("vectorimagefile"));
-            }
-            Some(x) if x == "png" || x == "jpg" => {
-                contents.media.insert(file_name, ProjectFile::new("imagefile"));
-            }
-            None | Some(_) => {
-                contents.data.insert(file_name, ProjectFile::new("textfile"));
-            },
+        let file_type = determine_file_type(path.extension().unwrap().to_str().unwrap());
+        
+        let section: &mut HashMap<String, ProjectFile> = match file_type.project_content_section {
+            ProjectContentSection::Patchers => &mut contents.patchers,
+            ProjectContentSection::Media => &mut contents.media,
+            ProjectContentSection::Code => &mut contents.code,
+            ProjectContentSection::Data => &mut contents.data,
+            ProjectContentSection::Externals => &mut contents.externals,
+            ProjectContentSection::Other => &mut contents.other,
         };
+
+        section.insert(file_name, ProjectFile::new(&file_type.project_file_type));
     }
 
     contents

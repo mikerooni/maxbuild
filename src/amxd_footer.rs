@@ -18,7 +18,7 @@
 use std::time::SystemTime;
 use bytes::{BufMut, Bytes, BytesMut};
 use crate::amxd_fields::{build_frozen_device_field};
-use crate::device_builder::{DeviceFile, DeviceFileFlag, DeviceFileType};
+use crate::device_builder::{DeviceFile, DeviceFileFlag};
 
 pub fn build_footer(files: &[DeviceFile]) -> Bytes{
     let mut buf = BytesMut::new();
@@ -28,19 +28,6 @@ pub fn build_footer(files: &[DeviceFile]) -> Bytes{
     }
 
     build_frozen_device_field("dlst", buf.freeze())
-}
-
-impl DeviceFileType {
-    fn to_field_representation(&self) -> Bytes {
-        let name = match self {
-            DeviceFileType::Json => { "JSON" }
-            DeviceFileType::Text => { "TEXT" }
-            DeviceFileType::Svg => { "svg " }
-            DeviceFileType::Png => { "PNG " }
-        };
-
-        Bytes::from(name)
-    }
 }
 
 impl DeviceFileFlag {
@@ -60,7 +47,7 @@ impl DeviceFile {
         let hfsplus_time:u32 = to_hfsplus_time(&self.modification_date);
 
         let mut buf = BytesMut::new();
-        buf.put(build_frozen_device_field("type", self.file_type.to_field_representation()));
+        buf.put(build_frozen_device_field("type", Bytes::from(self.file_type.to_owned())));
         buf.put(build_frozen_device_field("fnam", Bytes::from(self.file_name.to_owned() + "\x00")));
         buf.put(build_frozen_device_field("sz32", Bytes::from(self.data_size.to_be_bytes().to_vec())));
         buf.put(build_frozen_device_field("of32", Bytes::from(self.data_offset.to_be_bytes().to_vec())));

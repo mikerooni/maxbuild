@@ -32,6 +32,7 @@ mod amxd_footer;
 mod args;
 mod device_builder;
 mod maxpat_project;
+mod max_filetypes;
 
 fn main() {
     let args = MaxBuildArgs::parse();
