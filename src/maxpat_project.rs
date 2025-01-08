@@ -46,13 +46,13 @@ struct ProjectContents {
 }
 
 pub fn preprocess_template_file(template_path: &str, files: &Vec<String>) -> Result<String> {
-    let mut maxpat_json = parse_maxpat_json(&template_path)?;
+    let mut maxpat_json = parse_maxpat_json(template_path)?;
     let project = maxpat_json["patcher"]["project"].as_object_mut().unwrap();
 
     let project_contents = build_prject_contents(files);
     project.insert("contents".to_string(), serde_json::to_value(project_contents)?, );
 
-    return write_template(&template_path, maxpat_json);
+    write_template(template_path, maxpat_json)
 }
 
 fn build_prject_contents(files: &Vec<String>) -> ProjectContents {
@@ -80,7 +80,7 @@ fn build_prject_contents(files: &Vec<String>) -> ProjectContents {
         };
     }
 
-    return contents;
+    contents
 }
 
 fn write_template(template_path: &str, template: Value) -> Result<String> {
@@ -97,9 +97,9 @@ fn write_template(template_path: &str, template: Value) -> Result<String> {
     buf.put_u8(0);
 
     output_file.push(Path::new(template_path).file_name().unwrap());
-    fs::write(&output_file, buf.to_vec())?;
+    fs::write(&output_file, &buf)?;
 
-    return Ok(output_file.to_str().unwrap().to_string());
+    Ok(output_file.to_str().unwrap().to_string())
 }
 
 fn parse_maxpat_json(template_path: &str) -> Result<Value> {
@@ -108,5 +108,5 @@ fn parse_maxpat_json(template_path: &str) -> Result<Value> {
     let maxpat_contents = &file_contents[32..file_contents.len() - 1];
     let json_contents = serde_json::from_slice(maxpat_contents)?;
 
-    return Ok(json_contents);
+    Ok(json_contents)
 }

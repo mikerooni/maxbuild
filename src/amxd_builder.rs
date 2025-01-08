@@ -15,7 +15,7 @@
  */
 
 
-use crate::amxd_fields::{build_frozen_device_field, build_frozen_device_field_padless, build_header_field};
+use crate::amxd_fields::{build_frozen_device_field_padless, build_header_field};
 use bytes::{BufMut, Bytes, BytesMut};
 
 pub enum DeviceType {
@@ -27,7 +27,7 @@ pub enum DeviceType {
 }
 
 impl DeviceType {
-    fn to_header_representation(self) -> Bytes {
+    fn to_header_representation(&self) -> Bytes {
         let name = match self {
             DeviceType::AudioEffect => { "aaaa" }
             DeviceType::MidiEffect => { "mmmm" }
@@ -36,7 +36,7 @@ impl DeviceType {
             DeviceType::MidiToolTransformer => { "natt" }
         };
 
-        return Bytes::from(name)
+        Bytes::from(name)
     }
 }
 
@@ -47,7 +47,7 @@ pub fn build_frozen_amxd(device_type: DeviceType, meta: u32, data: Bytes, footer
     buf.put(build_header_field("meta", Bytes::from(meta.to_le_bytes().to_vec())));
     buf.put(build_header_field("ptch", build_frozen_device_body(data, footer)));
 
-    return buf.freeze()
+    buf.freeze()
 }
 
 fn build_frozen_device_body(data: Bytes, footer: Bytes) -> Bytes {
@@ -57,7 +57,7 @@ fn build_frozen_device_body(data: Bytes, footer: Bytes) -> Bytes {
     buf.put(data);
     buf.put(footer);
 
-    return buf.freeze()
+    buf.freeze()
 }
 
 fn build_frozen_header(footer_location: u32) -> Bytes {
@@ -68,6 +68,6 @@ fn build_frozen_header(footer_location: u32) -> Bytes {
         Bytes::from((footer_location as u64).to_be_bytes().to_vec()),
     ));
 
-    return buf.freeze()
+    buf.freeze()
 }
 

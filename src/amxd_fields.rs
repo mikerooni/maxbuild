@@ -18,14 +18,14 @@
 use bytes::{BufMut, Bytes, BytesMut};
 
 pub fn build_frozen_device_field(field_type: &str, data: Bytes) -> Bytes {
-    return build_field(field_type, data, true, true, true);
+    build_field(field_type, data, true, true, true)
 }
 pub fn build_frozen_device_field_padless(field_type: &str, data: Bytes) -> Bytes {
-    return build_field(field_type, data, true, true, false);
+    build_field(field_type, data, true, true, false)
 }
 
 pub fn build_header_field(field_type: &str, data: Bytes) -> Bytes {
-    return build_field(field_type, data, false, false, true);
+    build_field(field_type, data, false, false, true)
 }
 
 fn build_field(
@@ -36,11 +36,10 @@ fn build_field(
     pad_end: bool,
 ) -> Bytes {
     let mut buf = BytesMut::new();
-    let length = data.len();
 
     let add_length = if include_desc_length { 8 } else { 0 };
-    let raw_padding_length = ((data.len() as u32 + add_length) % 4);
-    let padding_length = if (raw_padding_length == 0 || !pad_end) {
+    let raw_padding_length = (data.len() as u32 + add_length) % 4;
+    let padding_length = if raw_padding_length == 0 || !pad_end {
         0
     } else {
         4 - raw_padding_length
@@ -57,5 +56,5 @@ fn build_field(
     buf.put(data);
     buf.put_bytes(0, padding_length as usize);
 
-    return buf.freeze();
+    buf.freeze()
 }

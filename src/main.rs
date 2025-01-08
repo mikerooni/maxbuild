@@ -15,7 +15,7 @@
  */
 
 
-use crate::amxd_builder::{build_frozen_amxd, DeviceType};
+use crate::amxd_builder::{build_frozen_amxd};
 use crate::amxd_footer::build_footer;
 use crate::args::MaxBuildArgs;
 use crate::device_builder::build_device;
@@ -59,12 +59,12 @@ fn main() {
         build_footer(device_data.files),
     );
 
-    fs::write(Path::new(&args.output_file), frozen_device.to_vec()).unwrap();
+    fs::write(Path::new(&args.output_file), &frozen_device).unwrap();
     fs::remove_dir_all(Path::new(&preprocessed_template).parent().unwrap()).unwrap();
 }
 
 fn add_files_recursive(path: &str, includes: &mut Vec<String>) -> io::Result<()> {
-    if fs::metadata(path).unwrap().is_file() {
+    if fs::metadata(path)?.is_file() {
         includes.push(path.to_string());
         return Ok(());
     }
@@ -81,5 +81,5 @@ fn add_files_recursive(path: &str, includes: &mut Vec<String>) -> io::Result<()>
         }
     }
 
-    return Ok(());
+    Ok(())
 }

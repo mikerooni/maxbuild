@@ -15,17 +15,17 @@
  */
 
 
-use std::{fs, path};
+use std::{fs};
 use std::path::Path;
 use std::time::SystemTime;
 use bytes::{BufMut, Bytes, BytesMut};
 
 
 pub enum DeviceFileType {
-    JSON, // only used for max patchers (?)
+    Json, // only used for max patchers (?)
     Text,
-    SVG,
-    PNG,
+    Svg,
+    Png,
 }
 
 pub enum DeviceFileFlag {
@@ -60,10 +60,10 @@ pub fn build_device(main_file_path: &String, paths: &Vec<String>) -> DeviceData 
             DeviceFileFlag::None
         };
 
-        files.push(add_file(&path, flag, &mut data_buf).unwrap());
+        files.push(add_file(path, flag, &mut data_buf).unwrap());
     }
 
-    return DeviceData { data: data_buf.freeze(), files, }
+    DeviceData { data: data_buf.freeze(), files, }
 }
 
 fn add_file(file_path: &String, flag: DeviceFileFlag, data_buf: &mut BytesMut) -> Option<DeviceFile> {
@@ -76,23 +76,23 @@ fn add_file(file_path: &String, flag: DeviceFileFlag, data_buf: &mut BytesMut) -
     println!("Packing file: {}", file_path);
     data_buf.put(Bytes::from(bytes));
 
-    return Some(DeviceFile {
+    Some(DeviceFile {
         file_type: determine_file_type(path.extension()?.to_str()?),
         file_name: path.file_name()?.to_str()?.to_owned(),
         data_size: length as u32,
         data_offset: data_offset as u32 + 16, // +16 to account for frozen device header
-        flag: flag,
+        flag,
         modification_date: SystemTime::now()
     })
 }
 
 fn determine_file_type(extension: &str) -> DeviceFileType {
     match extension {
-        "amxd" => DeviceFileType::JSON,
-        "maxpat" => DeviceFileType::JSON,
-        "json" => DeviceFileType::JSON,
-        "svg" => DeviceFileType::SVG,
-        "png" => DeviceFileType::PNG,
+        "amxd" => DeviceFileType::Json,
+        "maxpat" => DeviceFileType::Json,
+        "json" => DeviceFileType::Json,
+        "svg" => DeviceFileType::Svg,
+        "png" => DeviceFileType::Png,
         _ => DeviceFileType::Text
     }
 }

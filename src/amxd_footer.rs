@@ -17,7 +17,7 @@
 
 use std::time::SystemTime;
 use bytes::{BufMut, Bytes, BytesMut};
-use crate::amxd_fields::{build_frozen_device_field, build_header_field};
+use crate::amxd_fields::{build_frozen_device_field};
 use crate::device_builder::{DeviceFile, DeviceFileFlag, DeviceFileType};
 
 pub fn build_footer(files: Vec<DeviceFile>) -> Bytes{
@@ -27,48 +27,48 @@ pub fn build_footer(files: Vec<DeviceFile>) -> Bytes{
         buf.put(file.to_footer_field())
     }
 
-    return build_frozen_device_field("dlst", buf.freeze());
+    build_frozen_device_field("dlst", buf.freeze())
 }
 
 impl DeviceFileType {
-    fn to_field_representation(self) -> Bytes {
+    fn to_field_representation(&self) -> Bytes {
         let name = match self {
-            DeviceFileType::JSON => { "JSON" }
+            DeviceFileType::Json => { "JSON" }
             DeviceFileType::Text => { "TEXT" }
-            DeviceFileType::SVG => { "svg " }
-            DeviceFileType::PNG => { "PNG " }
+            DeviceFileType::Svg => { "svg " }
+            DeviceFileType::Png => { "PNG " }
         };
 
-        return Bytes::from(name)
+        Bytes::from(name)
     }
 }
 
 impl DeviceFileFlag {
-    fn to_bytes(self) -> Bytes {
+    fn to_bytes(&self) -> Bytes {
         let raw_flag: u32 = match self {
             DeviceFileFlag::None => { 0 }
             DeviceFileFlag::JSFile => { 8 }
             DeviceFileFlag::MainFile => { 17 }
         };
 
-        return Bytes::from(raw_flag.to_be_bytes().to_vec())
+        Bytes::from(raw_flag.to_be_bytes().to_vec())
     }
 }
 
 impl DeviceFile {
-    fn to_footer_field(self) -> Bytes {
+    fn to_footer_field(&self) -> Bytes {
         let hfsplus_time:u32 = to_hfsplus_time(self.modification_date);
 
         let mut buf = BytesMut::new();
         buf.put(build_frozen_device_field("type", self.file_type.to_field_representation()));
-        buf.put(build_frozen_device_field("fnam", Bytes::from(self.file_name + "\x00")));
+        buf.put(build_frozen_device_field("fnam", Bytes::from(self.file_name.to_owned() + "\x00")));
         buf.put(build_frozen_device_field("sz32", Bytes::from(self.data_size.to_be_bytes().to_vec())));
         buf.put(build_frozen_device_field("of32", Bytes::from(self.data_offset.to_be_bytes().to_vec())));
         buf.put(build_frozen_device_field("flag", self.flag.to_bytes()));
         buf.put(build_frozen_device_field("mdat", Bytes::from(hfsplus_time.to_be_bytes().to_vec())));
         buf.put(build_frozen_device_field("vers", Bytes::from(0u32.to_be_bytes().to_vec())));
 
-        return build_frozen_device_field("dire", buf.freeze());
+        build_frozen_device_field("dire", buf.freeze())
     }
 }
 
@@ -76,5 +76,5 @@ fn to_hfsplus_time(system_time: SystemTime) -> u32 {
     const HFSPLUS_OFFSET: u64 = 2082844800;
 
     let unix_time = system_time.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
-    return (unix_time + HFSPLUS_OFFSET) as u32;
+    (unix_time + HFSPLUS_OFFSET) as u32
 }
