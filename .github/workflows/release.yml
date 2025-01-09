@@ -22,5 +22,5 @@ jobs:
       uses: Shopify/upload-to-release@v2.0.0
       with:
         name: maxbuild-${{ matrix.os }}
-        path: artifacts/*
+        path: artifacts/**/*
         repo-token: ${{ secrets.GITHUB_TOKEN }}
