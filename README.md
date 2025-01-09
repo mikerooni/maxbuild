@@ -39,7 +39,7 @@ The device type can be one of the following:
 ## Special Thanks
 
 This project wouldn't have been possible without the `maxdiff` tool by Ableton, whose source code
-has been a great reference for developing the for frozen `.amxd` device packaging:  
+has been a great reference for developing the frozen `.amxd` device packaging part of this tool:  
 [GitHub Repository of **maxdevtools**](https://github.com/Ableton/maxdevtools)
 
 Special thanks also goes to the open source libraries used in this project!  
