@@ -20,10 +20,11 @@ jobs:
     - name: Download Artifact
       uses: actions/download-artifact@v4.1.8
       with:
+        name: maxbuild-${{ matrix.os }}
         path: ${{ github.workspace }}/artifacts/
     - name: List Artifacts
       id: list_artifacts
-      run: echo "artifact_path=$(ls ${{ github.workspace }}/artifacts/maxbuild*)" >> $GITHUB_OUTPUT
+      run: echo "artifact_path=$((find -type f ${{ github.workspace }}/artifacts/))" >> $GITHUB_OUTPUT
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@v2.0.0
       with:
