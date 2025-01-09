@@ -23,7 +23,7 @@ jobs:
         path: ${{ github.workspace }}/artifacts/
     - name: List Artifacts
       id: list_artifacts
-      run: echo "artifact_path=\"$(find ${{ github.workspace }}/artifacts/maxbuild*)\"" >> $GITHUB_OUTPUT
+      run: echo "artifact_path=$(ls ${{ github.workspace }}/artifacts/maxbuild*)" >> $GITHUB_OUTPUT
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@v2.0.0
       with:
