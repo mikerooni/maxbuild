@@ -13,18 +13,14 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu, windows, macos]
     steps:
     - name: Download Artifact
-      uses: actions/upload-artifact@v4.5.0
+      uses: actions/download-artifact@v4.1.8
       with:
-        name: maxbuild-${{ matrix.os }}
-        path: target/release/maxbuild*
+        path: artifacts/
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@v2.0.0
       with:
         name: maxbuild-${{ matrix.os }}
-        path: '*'
+        path: artifacts/*
         repo-token: ${{ secrets.GITHUB_TOKEN }}
