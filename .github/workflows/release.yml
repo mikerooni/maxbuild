@@ -20,7 +20,10 @@ jobs:
     - name: Download Artifact
       uses: actions/download-artifact@v4.1.8
       with:
-        path: $GITHUB_WORKSPACE/artifacts/
+        path: ${{ github.workspace }}/artifacts/
+    - name: List Artifacts
+      run: |
+        find ${{ github.workspace }}/artifacts/
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@v2.0.0
       with:
