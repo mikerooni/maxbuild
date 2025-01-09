@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu, macos]
+        os: [ubuntu]
     steps:
     - name: Download Artifact
       uses: actions/download-artifact@v4.1.8
@@ -23,7 +23,7 @@ jobs:
         path: ${{ github.workspace }}/artifacts/
     - name: List Artifacts
       id: list_artifacts
-      run: echo "artifact_path=$((ls ${{ github.workspace }}/artifacts/maxbuild-${{ matrix.os }}/*))" >> $GITHUB_OUTPUT
+      run: echo "artifact_path=`ls ${{ github.workspace }}/artifacts/maxbuild-${{ matrix.os }}/*`" >> $GITHUB_OUTPUT
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@v2.0.0
       with:
