@@ -17,10 +17,10 @@ jobs:
     - name: Download Artifact
       uses: actions/download-artifact@v4.1.8
       with:
-        path: ${{ GITHUB_WORKSPACE }}/artifacts/
+        path: $GITHUB_WORKSPACE/artifacts/
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@v2.0.0
       with:
         name: maxbuild-${{ matrix.os }}
-        path: ${{ GITHUB_WORKSPACE }}/artifacts/**/*
+        path: $GITHUB_WORKSPACE/artifacts/**/*
         repo-token: ${{ secrets.GITHUB_TOKEN }}
