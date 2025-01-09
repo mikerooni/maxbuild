@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  release:
+    types: [ created ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    uses: ./.github/workflows/rust.yml
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macos]
+    steps:
+    - name: Download Artifact
+      uses: actions/upload-artifact@v4.5.0
+      with:
+        name: maxbuild-${{ matrix.os }}
+        path: target/release/maxbuild*
+    - name: Upload to Release Action
+      uses: Shopify/upload-to-release@v2.0.0
+      with:
+        name: maxbuild-${{ matrix.os }}
+        path: '*'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
