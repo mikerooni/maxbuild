@@ -22,11 +22,11 @@ jobs:
       with:
         path: ${{ github.workspace }}/artifacts/
     - name: List Artifacts
-      run: |
-        export ARTIFACT_PATH=$(find ${{ github.workspace }}/artifacts/maxbuild*)
+      id: list_artifacts
+      run: echo "artifact_path=$(find ${{ github.workspace }}/artifacts/maxbuild*)" >> $GITHUB_OUTPUT
     - name: Upload to Release Action
       uses: Shopify/upload-to-release@v2.0.0
       with:
         name: maxbuild-${{ matrix.os }}
-        path: ${{ env.ARTIFACT_PATH }}
+        path: ${{ steps.list_artifacts.outputs.artifact_path }}
         repo-token: ${{ secrets.GITHUB_TOKEN }}
